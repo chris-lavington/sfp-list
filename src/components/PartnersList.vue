@@ -17,7 +17,8 @@
             <div class="d-flex flex-no-wrap justify-space-between">
               <div>
                 <v-card-text v-if="lastUpdated" class="text--primary">
-                  Last updated: {{ dateFormat(lastUpdated.dateofupdate.seconds) }}
+                  Last updated:
+                  {{ dateFormat(lastUpdated.dateofupdate.seconds) }}
                 </v-card-text>
               </div>
             </div>
@@ -116,7 +117,6 @@ export default {
   },
   computed: {
     // prettyDate() {
-
     // }
   }
 }
