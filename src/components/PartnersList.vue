@@ -1,18 +1,10 @@
 <template>
   <div>
-    <v-app-bar app clipped-left color="blue-grey">
+    <v-app-bar app clipped-left color="blue-grey white--text">
       <v-app-bar-nav-icon @click="drawer = !drawer" />
       <span class="title ml-3 mr-5 font-weight-light"
         >Sustainable Food Partnership</span
       >
-      <!-- <v-text-field
-        solo-inverted
-        flat
-        hide-details
-        label="Search"
-        prepend-inner-icon="search"
-      /> -->
-
       <v-spacer />
       <span class="font-weight-light" v-if="lastUpdated">
         Last updated:
@@ -26,7 +18,7 @@
           <v-btn
             @click="addFilters('addAreas', 'addCategories')"
             text
-            color="blue darken-3"
+            color="blue darken-4"
             >ADD ALL FILTERS</v-btn
           >
         </v-col>
@@ -34,7 +26,7 @@
           <v-btn
             @click="clearFilters('clearAreas', 'clearCategories')"
             text
-            color="red darken-3"
+            color="red darken-4"
             >CLEAR ALL FILTERS</v-btn
           >
         </v-col>
@@ -51,7 +43,7 @@
                 @click="addFilters('', 'addCategories')"
                 text
                 small
-                color="blue darken-3"
+                color="blue darken-4"
                 >ADD ALL</v-btn
               >
             </v-col>
@@ -60,7 +52,7 @@
                 @click="clearFilters('', 'clearCategories')"
                 text
                 small
-                color="red darken-3"
+                color="red darken-4"
                 >CLEAR ALL</v-btn
               >
             </v-col>
@@ -68,8 +60,10 @@
           <v-list-item-group v-model="categories" multiple>
             <template v-for="(categoryCheckbox, index) in categoryCheckboxes">
               <v-list-item
+                v-if="categoryCheckbox.value == 'Food Supplier or Wholesaler'"
                 :key="`categoryCheckbox-${index}`"
                 :value="categoryCheckbox.value"
+                active-class="green--text text--darken-4"
               >
                 <template v-slot:default="{ active, toggle }">
                   <v-list-item-content>
@@ -82,7 +76,55 @@
                     <v-checkbox
                       :input-value="active"
                       :true-value="categoryCheckbox.value"
-                      color="light-blue darken-4"
+                      color="green darken-4"
+                      @click="toggle"
+                    ></v-checkbox>
+                  </v-list-item-action>
+                </template>
+              </v-list-item>
+              <v-list-item
+                v-else-if="
+                  categoryCheckbox.value == 'Meal Delivery or Collection'
+                "
+                :key="`categoryCheckbox-${index}`"
+                :value="categoryCheckbox.value"
+                active-class="blue--text text--darken-4"
+              >
+                <template v-slot:default="{ active, toggle }">
+                  <v-list-item-content>
+                    <v-list-item-title
+                      v-text="categoryCheckbox.value"
+                    ></v-list-item-title>
+                  </v-list-item-content>
+
+                  <v-list-item-action>
+                    <v-checkbox
+                      :input-value="active"
+                      :true-value="categoryCheckbox.value"
+                      color="blue darken-4"
+                      @click="toggle"
+                    ></v-checkbox>
+                  </v-list-item-action>
+                </template>
+              </v-list-item>
+              <v-list-item
+                v-else-if="categoryCheckbox.value == 'Alcohol'"
+                :key="`categoryCheckbox-${index}`"
+                :value="categoryCheckbox.value"
+                active-class="pink--text text--darken-4"
+              >
+                <template v-slot:default="{ active, toggle }">
+                  <v-list-item-content>
+                    <v-list-item-title
+                      v-text="categoryCheckbox.value"
+                    ></v-list-item-title>
+                  </v-list-item-content>
+
+                  <v-list-item-action>
+                    <v-checkbox
+                      :input-value="active"
+                      :true-value="categoryCheckbox.value"
+                      color="pink darken-4"
                       @click="toggle"
                     ></v-checkbox>
                   </v-list-item-action>
@@ -103,7 +145,7 @@
                   @click="addFilters('addAreas', '')"
                   text
                   small
-                  color="blue darken-3"
+                  color="blue darken-4"
                   >ADD ALL</v-btn
                 >
               </v-col>
@@ -112,7 +154,7 @@
                   @click="clearFilters('clearAreas', '')"
                   text
                   small
-                  color="red darken-3"
+                  color="red darken-4"
                   >CLEAR ALL</v-btn
                 >
               </v-col>
@@ -121,7 +163,7 @@
               <v-list-item
                 :key="`areaCheckbox-${index}`"
                 :value="areaCheckbox.value"
-                active-class=""
+                active-class="blue-grey--text text--darken-4"
               >
                 <template v-slot:default="{ active, toggle }">
                   <v-list-item-content>
@@ -134,7 +176,7 @@
                     <v-checkbox
                       :input-value="active"
                       :true-value="areaCheckbox.value"
-                      color="teal darken-4"
+                      color="blue-grey darken-4"
                       @click="toggle"
                     ></v-checkbox>
                   </v-list-item-action>
@@ -163,7 +205,7 @@
                   class="mx-auto my-3 partner-card"
                   max-width="600"
                   outlined
-                  :elevation="hover ? 6 : 2"
+                  :elevation="hover ? 4 : 1"
                 >
                   <div class="d-flesx flex-no-wrap justify-space-between">
                     <div>
@@ -172,18 +214,20 @@
                         v-text="partner.name"
                       ></v-card-title>
                       <v-card-text>
-                        <ul>
+                        <ul class="ml-0 pl-0">
                           <li v-if="partner.phone">
-                            <v-icon>mdi-phone</v-icon>&nbsp;{{ partner.phone }}
+                            <v-icon small>mdi-phone</v-icon>&nbsp;{{
+                              partner.phone
+                            }}
                           </li>
                           <li v-if="partner.email">
-                            <v-icon>mdi-email</v-icon>&nbsp;{{ partner.email }}
+                            <v-icon small>mdi-email</v-icon>&nbsp;{{
+                              partner.email
+                            }}
                           </li>
                           <li v-if="partner.url">
-                            <a href="partner.url">
-                              <v-icon>mdi-web</v-icon>&nbsp;
-                              {{ partner.url | stripUrl }}
-                            </a>
+                            <v-icon small>mdi-web</v-icon>&nbsp;
+                            <a :href="partner.url">{{ partner.urldisplay }} </a>
                           </li>
                         </ul>
                       </v-card-text>
@@ -195,24 +239,48 @@
                       <v-divider class="mt-6 mx-4"></v-divider>
                       <v-card-text>
                         <v-chip
-                          v-if="partner.category"
+                          v-if="
+                            partner.category == 'Food Supplier or Wholesaler'
+                          "
+                          outlined
+                          pill
                           class="ma-2"
-                          color="light-blue darken-4"
-                          label
-                          text-color="white"
+                          color="green darken-2"
+                          text-color="green darken-4"
                         >
-                          <v-icon left>mdi-label</v-icon>
-                          Category: {{ partner.category }}
+                          {{ partner.category }}
+                        </v-chip>
+                        <v-chip
+                          v-else-if="
+                            partner.category == 'Meal Delivery or Collection'
+                          "
+                          outlined
+                          pill
+                          class="ma-2"
+                          color="blue darken-4"
+                          text-color="blue darken-4"
+                        >
+                          {{ partner.category }}
+                        </v-chip>
+                        <v-chip
+                          v-else-if="partner.category == 'Alcohol'"
+                          outlined
+                          pill
+                          class="ma-2"
+                          color="pink darken-4"
+                          text-color="pink darken-4"
+                        >
+                          {{ partner.category }}
                         </v-chip>
                         <v-chip
                           v-if="partner.area"
+                          outlined
+                          pill
                           class="ma-2"
                           color="cyan darken-4"
-                          label
-                          text-color="white"
+                          text-color="cyan darken-4"
                         >
-                          <v-icon left>mdi-label</v-icon>
-                          Area: {{ partner.area }}
+                          {{ partner.area }}
                         </v-chip>
                       </v-card-text>
                     </div>
@@ -389,8 +457,8 @@ export default {
       if (c == 'addCategories') {
         this.categories = [
           'Food Supplier or Wholesaler',
-          'Alcohol',
-          'Meal Delivery or Collection'
+          'Meal Delivery or Collection',
+          'Alcohol'
         ]
       }
     }
@@ -405,7 +473,7 @@ export default {
   created() {
     // fetch data from firestore
     db.collection('partners')
-      .orderBy('category', 'desc')
+      .orderBy('categoryorder')
       .orderBy('area')
       .orderBy('name')
       .where('show', '==', 'yes')
@@ -438,8 +506,8 @@ export default {
   mounted() {
     ;(this.categories = [
       'Food Supplier or Wholesaler',
-      'Alcohol',
-      'Meal Delivery or Collection'
+      'Meal Delivery or Collection',
+      'Alcohol'
     ]),
       (this.areas = [
         'Throughout B&NES',

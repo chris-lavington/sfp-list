@@ -1,0 +1,27 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "partners",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "show",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "categoryorder",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "area",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "name",
+          "order": "ASCENDING"
+        }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}
