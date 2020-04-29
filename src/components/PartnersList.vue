@@ -2,17 +2,34 @@
   <div>
     <v-app-bar app clipped-left color="blue-grey white--text">
       <v-app-bar-nav-icon @click="drawer = !drawer" />
-      <span class="title ml-3 mr-5 font-weight-light"
+      <span class="title ml-3 mr-5 font-weight-light d-none d-sm-flex"
+        >Sustainable Food Partnership</span
+      >
+      <span class="subtitle-1 ml-3 mr-5 font-weight-light d-flex d-sm-none"
         >Sustainable Food Partnership</span
       >
       <v-spacer />
-      <span class="font-weight-light" v-if="lastUpdated">
+      <span class="font-weight-light d-none d-sm-flex" v-if="lastUpdated">
+        Last updated:
+        {{ dateFormat(lastUpdated.dateofupdate.seconds) }}
+      </span>
+      <span
+        class="font-weight-light caption d-flex d-sm-none"
+        v-if="lastUpdated"
+      >
         Last updated:
         {{ dateFormat(lastUpdated.dateofupdate.seconds) }}
       </span>
     </v-app-bar>
 
-    <v-navigation-drawer v-model="drawer" app clipped color="" width="400">
+    <v-navigation-drawer
+      v-model="drawer"
+      app
+      clipped
+      color=""
+      :mobile-breakpoint="$vuetify.breakpoint.xsOnly"
+      width="400"
+    >
       <v-row class="my-2">
         <v-col>
           <v-btn
@@ -231,8 +248,12 @@
                           </li>
                         </ul>
                       </v-card-text>
-                      <v-divider class="mt-6 mx-4"></v-divider>
+                      <v-divider
+                        v-if="partner.description"
+                        class="mt-6 mx-4"
+                      ></v-divider>
                       <v-card-text
+                        v-if="partner.description"
                         v-html="partner.description"
                         class="text--primary"
                       ></v-card-text>
@@ -308,15 +329,15 @@ export default {
       categoryCheckboxes: [
         {
           checked: true,
-          value: 'Alcohol'
-        },
-        {
-          checked: true,
           value: 'Food Supplier or Wholesaler'
         },
         {
           checked: true,
           value: 'Meal Delivery or Collection'
+        },
+        {
+          checked: true,
+          value: 'Alcohol'
         }
       ],
       areaCheckboxes: [
