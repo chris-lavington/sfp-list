@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <v-app>
-      <PartnersList />
+      <partners-list />
     </v-app>
   </div>
 </template>
@@ -12,7 +12,7 @@ import PartnersList from './components/PartnersList.vue'
 export default {
   name: 'App',
   components: {
-    PartnersList
+    'partners-list': PartnersList
   }
 }
 </script>

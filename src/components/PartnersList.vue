@@ -2,19 +2,20 @@
   <div>
     <v-app-bar app clipped-left color="blue-grey white--text">
       <v-app-bar-nav-icon @click="drawer = !drawer" />
-      <span class="title ml-3 mr-5 font-weight-light d-none d-sm-flex"
-        >Sustainable Food Partnership</span
-      >
-      <span class="subtitle-1 ml-3 mr-5 font-weight-light d-flex d-sm-none"
+      <span
+        :class="{
+          'subtitle-1 ml-3 mr-5 font-weight-light':
+            $vuetify.breakpoint.smAndDown,
+          'title ml-3 mr-5 font-weight-light': $vuetify.breakpoint.mdAndUp
+        }"
         >Sustainable Food Partnership</span
       >
       <v-spacer />
-      <span class="font-weight-light d-none d-sm-flex" v-if="lastUpdated">
-        Last updated:
-        {{ dateFormat(lastUpdated.dateofupdate.seconds) }}
-      </span>
       <span
-        class="font-weight-light caption d-flex d-sm-none"
+        :class="{
+          'font-weight-light caption': $vuetify.breakpoint.smAndDown,
+          'font-weight-light': $vuetify.breakpoint.mdAndUp
+        }"
         v-if="lastUpdated"
       >
         Last updated:
@@ -27,33 +28,40 @@
       app
       clipped
       color=""
-      :mobile-breakpoint="$vuetify.breakpoint.xsOnly"
-      width="400"
+      mobile-breakpoint=""
+      width="330"
     >
-      <v-row class="my-2">
+      <v-row>
         <v-col>
-          <v-btn
-            @click="addFilters('addAreas', 'addCategories')"
-            text
-            color="blue darken-4"
-            >ADD ALL FILTERS</v-btn
-          >
-        </v-col>
-        <v-col>
-          <v-btn
-            @click="clearFilters('clearAreas', 'clearCategories')"
-            text
-            color="red darken-4"
-            >CLEAR ALL FILTERS</v-btn
+          <v-icon class="text-right ml-3" @click="drawer = false"
+            >mdi-close</v-icon
           >
         </v-col>
       </v-row>
+      <div class="text-center">
+        <v-btn
+          @click="addFilters('addAreas', 'addCategories')"
+          class="ma-1"
+          text
+          small
+          color="blue darken-4"
+          >ADD ALL FILTERS</v-btn
+        >
+        <v-btn
+          @click="clearFilters('clearAreas', 'clearCategories')"
+          class="ma-1"
+          text
+          small
+          color="red darken-4"
+          >CLEAR ALL FILTERS</v-btn
+        >
+      </div>
       <v-divider class="my-4"></v-divider>
-      <v-card class="mx-auto my-4 pa-2" outlined max-width="380">
-        <v-card-title class="subtitle-1 pb-0 mb-0"
+      <v-card class="mx-auto my-4 pa-2" outlined max-width="300">
+        <v-card-title class="subtitle-2 pb-0 mb-0"
           >FILTER CATEGORY</v-card-title
         >
-        <v-list shaped>
+        <v-list shaped dense>
           <v-row>
             <v-col>
               <v-btn
@@ -152,9 +160,9 @@
         </v-list>
       </v-card>
       <v-divider class="my-4"></v-divider>
-      <v-card class="mx-auto my-4 pa-2" outlined max-width="380">
-        <v-card-title class="subtitle-1 pb-0 mb-0">FILTER AREA</v-card-title>
-        <v-list shaped>
+      <v-card class="mx-auto my-4 pa-2" outlined max-width="300">
+        <v-card-title class="subtitle-2 pb-0 mb-0">FILTER AREA</v-card-title>
+        <v-list shaped dense>
           <v-list-item-group v-model="areas" multiple>
             <v-row>
               <v-col>
@@ -178,6 +186,7 @@
             </v-row>
             <template v-for="(areaCheckbox, index) in areaCheckboxes">
               <v-list-item
+                v-show="index < limit_by"
                 :key="`areaCheckbox-${index}`"
                 :value="areaCheckbox.value"
                 active-class="blue-grey--text text--darken-4"
@@ -201,12 +210,28 @@
               </v-list-item>
             </template>
           </v-list-item-group>
+          <v-btn
+            @click="areaToggle(default_limit, areaCheckboxes.length)"
+            small
+            text
+            color="blue darken-4"
+            class="my-2 d-flex flex-row-reverse"
+            >{{ showLimit }}&nbsp;<v-icon v-if="limit_by == 3" small
+              >mdi-chevron-down</v-icon
+            ><v-icon v-else small>mdi-chevron-up</v-icon></v-btn
+          >
         </v-list>
       </v-card>
     </v-navigation-drawer>
 
     <v-content>
-      <v-row v-if="selectedFilters != ''" class="my-6">
+      <v-row
+        v-if="selectedFilters != ''"
+        :class="{
+          'ma-6': $vuetify.breakpoint.smAndDown,
+          'my-6': $vuetify.breakpoint.mdAndUp
+        }"
+      >
         <v-col v-for="(partner, i) in selectedFilters" :key="i" cols="12">
           <v-hover>
             <template v-slot="{ hover }">
@@ -224,40 +249,66 @@
                   outlined
                   :elevation="hover ? 4 : 1"
                 >
-                  <div class="d-flesx flex-no-wrap justify-space-between">
+                  <div class="d-flex flex-no-wrap justify-space-between">
                     <div>
-                      <v-card-title
-                        class="title"
-                        v-text="partner.name"
-                      ></v-card-title>
-                      <v-card-text>
-                        <ul class="ml-0 pl-0">
-                          <li v-if="partner.phone">
-                            <v-icon small>mdi-phone</v-icon>&nbsp;{{
-                              partner.phone
-                            }}
-                          </li>
-                          <li v-if="partner.email">
-                            <v-icon small>mdi-email</v-icon>&nbsp;{{
-                              partner.email
-                            }}
-                          </li>
-                          <li v-if="partner.url">
-                            <v-icon small>mdi-web</v-icon>&nbsp;
-                            <a :href="partner.url">{{ partner.urldisplay }} </a>
-                          </li>
-                        </ul>
-                      </v-card-text>
+                      <v-row>
+                        <v-col class="ma-0 pa-2 pl-3" cols="10">
+                          <v-card-title
+                            class="title"
+                            v-text="partner.name"
+                          ></v-card-title>
+                        </v-col>
+                        <v-col class="ma-0 pa-2" cols="2">
+                          <v-card-actions class="justify-end">
+                            <v-tooltip bottom>
+                              <template v-slot:activator="{ on }">
+                                <v-btn
+                                  class="ma-0 pa-0"
+                                  v-if="partner.email"
+                                  :href="`mailto:${partner.email}`"
+                                  icon
+                                >
+                                  <v-icon v-on="on">mdi-email</v-icon>
+                                </v-btn>
+                              </template>
+                              <span>Send email</span>
+                            </v-tooltip>
+
+                            <v-tooltip bottom>
+                              <template v-slot:activator="{ on }">
+                                <v-btn
+                                  class="ma-0 mr-2 pa-0"
+                                  v-if="partner.url"
+                                  :href="partner.url"
+                                  icon
+                                >
+                                  <v-icon v-on="on">mdi-web</v-icon>
+                                </v-btn>
+                              </template>
+                              <span>Visit website</span>
+                            </v-tooltip>
+                          </v-card-actions>
+                        </v-col>
+                      </v-row>
+
+                      <v-card-text
+                        v-if="partner.phone"
+                        v-text="partner.phone"
+                        class="body-2 mb-4 py-0"
+                        ><v-icon small>mdi-phone</v-icon>&nbsp;{{
+                          partner.phone
+                        }}</v-card-text
+                      >
                       <v-divider
                         v-if="partner.description"
-                        class="mt-6 mx-4"
+                        class="ma-0"
                       ></v-divider>
                       <v-card-text
                         v-if="partner.description"
                         v-html="partner.description"
-                        class="text--primary"
+                        class="text--primary mt-3"
                       ></v-card-text>
-                      <v-divider class="mt-6 mx-4"></v-divider>
+                      <v-divider class="ma-0"></v-divider>
                       <v-card-text>
                         <v-chip
                           v-if="
@@ -265,7 +316,7 @@
                           "
                           outlined
                           pill
-                          class="ma-2"
+                          class="mt-2 mr-2 mb-2 ml-0"
                           color="green darken-2"
                           text-color="green darken-4"
                         >
@@ -277,7 +328,7 @@
                           "
                           outlined
                           pill
-                          class="ma-2"
+                          class="mt-2 mr-2 mb-2 ml-0"
                           color="blue darken-4"
                           text-color="blue darken-4"
                         >
@@ -287,7 +338,7 @@
                           v-else-if="partner.category == 'Alcohol'"
                           outlined
                           pill
-                          class="ma-2"
+                          class="mt-2 mr-2 mb-2 ml-0"
                           color="pink darken-4"
                           text-color="pink darken-4"
                         >
@@ -320,7 +371,7 @@
 import db from '@/firebase/init'
 
 export default {
-  name: 'PartnersList',
+  name: 'partners-list',
   data() {
     return {
       drawer: null,
@@ -379,7 +430,9 @@ export default {
       ],
       categories: [],
       areas: [],
-      isActive: false
+      isActive: false,
+      default_limit: 3,
+      limit_by: 3
     }
   },
   computed: {
@@ -393,8 +446,8 @@ export default {
 
       return filteredCats
     },
-    areaCount() {
-      return this.areas.length
+    showLimit() {
+      return this.limit_by === 3 ? 'Show more areas' : 'Show less areas'
     }
   },
   methods: {
@@ -482,6 +535,10 @@ export default {
           'Alcohol'
         ]
       }
+    },
+    areaToggle(default_limit, filters_length) {
+      this.limit_by =
+        this.limit_by === default_limit ? filters_length : default_limit
     }
   },
   filters: {
@@ -566,7 +623,8 @@ export default {
         'Tunley',
         'West Harptree',
         'Wrington'
-      ])
+      ]),
+      (this.limit_by = 3)
   }
 }
 </script>
